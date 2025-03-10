@@ -1,20 +1,10 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip
-} from '@mui/material'
+import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import React from 'react'
 
 import Divider from '@mui/material/Divider'
-import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Check, Logout, PersonAdd, Settings } from '@mui/icons-material'
+import { Logout, PersonAdd, Settings } from '@mui/icons-material'
 
 function Profile() {
   const [anchorEl, setAnchorEl] = React.useState(null)
