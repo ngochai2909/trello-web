@@ -27,7 +27,7 @@ function Profile() {
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar
-            sx={{ width: 32, height: 32 }}
+            sx={{ width: 36, height: 36 }}
             alt='Hai Nguyen Avatar'
             src='https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/477943168_2406293513038133_8698001168044826872_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=9LCPzqqiR5MQ7kNvgHIb8Y-&_nc_oc=AdgJvSOni8zegnVCQR9T8plP3oKGbOPN5PDxJnxWGxzNZZmguzozG9I9qo8U3HuXNqI&_nc_zt=23&_nc_ht=scontent.fhan15-1.fna&_nc_gid=ABj7KBoy9nZ1wboqjEmyKLP&oh=00_AYA5E0dkK6oDTF2LWqgyBNUPmtwFnwsPPje-oO9pFt9M8Q&oe=67CC39BA'
           />

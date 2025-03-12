@@ -6,13 +6,13 @@ import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 const MenuStyle = {
-  color: 'primary.main',
-  bgcolor: 'white',
+  color: 'white',
+  bgcolor: 'transparent',
   border: 'none',
   paddingX: '5px',
   borderRadius: '4px',
   '& .MuiSvgIcon-root': {
-    color: 'primary.main'
+    color: 'white'
   },
   '&:hover': {
     bgcolor: 'primary.50'
@@ -24,7 +24,6 @@ function BoardBar() {
     <Box
       px={2}
       sx={{
-        backgroundColor: 'white',
         width: '100%',
         height: (theme) => theme.trello.boardBarHeight,
         display: 'flex',
@@ -32,7 +31,10 @@ function BoardBar() {
         justifyContent: 'space-between',
         gap: 2,
         overflowX: 'auto',
-        borderTop: '1px solid #00bfa5'
+        borderTop: '1px solid #00bfa5',
+        borderBottom: '1px solid white',
+        bgcolor: (theme) =>
+          theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -40,32 +42,57 @@ function BoardBar() {
           sx={MenuStyle}
           icon={<DashboardIcon />}
           label='Hai nguyen Mern stack'
+          clickable
         />
         <Chip
           sx={MenuStyle}
           icon={<VpnLockIcon />}
           label='Public/Private Workspace'
+          clickable
         />
         <Chip
           sx={MenuStyle}
           icon={<AddToDriveIcon />}
           label='Add to google drive '
+          clickable
         />
-        <Chip sx={MenuStyle} icon={<BoltIcon />} label='Automation ' />
-        <Chip sx={MenuStyle} icon={<FilterListIcon />} label='Filter ' />
+        <Chip
+          sx={MenuStyle}
+          icon={<BoltIcon />}
+          label='Automation '
+          clickable
+        />
+        <Chip
+          sx={MenuStyle}
+          icon={<FilterListIcon />}
+          label='Filter '
+          clickable
+        />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button variant='outlined' startIcon={<PersonAddIcon />}>
+        <Button
+          sx={{
+            color: 'white',
+            borderColor: 'white',
+            '&:hover': {
+              borderColor: 'white'
+            }
+          }}
+          variant='outlined'
+          startIcon={<PersonAddIcon />}
+        >
           Invite
         </Button>
         <Tooltip title='avatar' arrow>
           <AvatarGroup
             max={7}
             sx={{
+              gap: '10px',
               '& .MuiAvatar-root': {
                 width: 34,
                 height: 34,
-                fontSize: 16
+                fontSize: 16,
+                border: 'none'
               }
             }}
           >
