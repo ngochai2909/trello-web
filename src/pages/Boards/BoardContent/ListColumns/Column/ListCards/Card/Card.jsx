@@ -10,7 +10,14 @@ import {
   Typography
 } from '@mui/material'
 
-function Card() {
+function Card({ card }) {
+  const shouldShowCardActions = () => {
+    return (
+      !!card?.memberIds?.length ||
+      !!card?.comments?.length ||
+      !!card?.attachments?.length
+    )
+  }
   return (
     <MuiCard
       sx={{
@@ -19,11 +26,14 @@ function Card() {
         overflow: 'unset'
       }}
     >
-      <CardMedia
-        sx={{ height: 140 }}
-        image='https://scontent.fhan5-2.fna.fbcdn.net/v/t39.30808-6/477943168_2406293513038133_8698001168044826872_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEIDfZJdb2Go2XlNNTc85ZmXPHllKimxsZc8eWUqKbGxns_QCX-sB8MmAESR_FvjWkN8cJXAcVGa_Pm1ERzPdNE&_nc_ohc=rJ0siRgTtKYQ7kNvgE2T5YI&_nc_oc=Adg8BbUOrIql7XpYVcDHgUJjhIm3A0xs5t-6k-mMqDJdC_UWk67YixJBMdDAkWItOTE&_nc_zt=23&_nc_ht=scontent.fhan5-2.fna&_nc_gid=APbv56X_qaeeXWJN7IvG0hZ&oh=00_AYH_VhiDvahGZ8I6iaBAu-uXgSaxmuvitAmV5yAOO8anMQ&oe=67D9D93A'
-        title='green iguana'
-      />
+      {card?.cover && (
+        <CardMedia
+          sx={{ height: 140 }}
+          image={card.cover}
+          title='green iguana'
+        />
+      )}
+
       <CardContent
         sx={{
           p: 1.5,
@@ -32,23 +42,31 @@ function Card() {
           }
         }}
       >
-        <Typography>Hai Nguyen Mern Stack</Typography>
+        <Typography>{card?.title}</Typography>
       </CardContent>
-      <CardActions
-        sx={{
-          p: '0 4px 8px 4px'
-        }}
-      >
-        <Button startIcon={<GroupIcon />} size='small'>
-          20
-        </Button>
-        <Button startIcon={<CommentIcon />} size='small'>
-          15
-        </Button>
-        <Button startIcon={<AttachmentIcon />} size='small'>
-          10
-        </Button>
-      </CardActions>
+      {shouldShowCardActions() && (
+        <CardActions
+          sx={{
+            p: '0 4px 8px 4px'
+          }}
+        >
+          {!!card?.memberIds?.length && (
+            <Button startIcon={<GroupIcon />} size='small'>
+              {card?.memberIds?.length}
+            </Button>
+          )}
+          {!!card?.comments?.length && (
+            <Button startIcon={<CommentIcon />} size='small'>
+              {card?.comments?.length}
+            </Button>
+          )}
+          {!!card?.attachments?.length && (
+            <Button startIcon={<AttachmentIcon />} size='small'>
+              {card?.attachments?.length}
+            </Button>
+          )}
+        </CardActions>
+      )}
     </MuiCard>
   )
 }
