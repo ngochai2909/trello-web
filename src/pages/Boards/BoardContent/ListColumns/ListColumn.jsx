@@ -1,49 +1,58 @@
 import { Box, Button } from '@mui/material'
 import Column from './Column/Column'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
+import {
+  SortableContext,
+  horizontalListSortingStrategy
+} from '@dnd-kit/sortable'
 
 function ListColumn({ columns }) {
   return (
-    <Box
-      sx={{
-        bgcolor: 'inherit',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        overflowX: 'auto',
-        overflowY: 'hidden',
-        '&::-webkit-scrollbar-track': {
-          m: 2
-        }
-      }}
+    <SortableContext
+      items={columns?.map((c) => c._id)}
+      strategy={horizontalListSortingStrategy}
     >
-      {columns?.map((column) => (
-        <Column key={column._id} column={column} />
-      ))}
       <Box
         sx={{
-          minWidth: 200,
-          maxWidth: 200,
-          mx: 2,
-          borderRadius: '6px',
-          bgcolor: '#ffffff3d',
-          height: 'fit-content'
+          bgcolor: 'inherit',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+          '&::-webkit-scrollbar-track': {
+            m: 2
+          }
         }}
       >
-        <Button
+        {columns?.map((column) => (
+          <Column key={column._id} column={column} />
+        ))}
+        <Box
           sx={{
-            color: 'white',
-            width: '100%',
-            justifyContent: 'flex-start',
-            pl: 2.5,
-            py: 1
+            minWidth: 200,
+            maxWidth: 200,
+            mx: 2,
+            borderRadius: '6px',
+            bgcolor: '#ffffff3d',
+            height: 'fit-content'
           }}
-          startIcon={<NoteAddIcon />}
         >
-          Add New Column
-        </Button>
+          <Button
+            sx={{
+              color: 'white',
+              width: '100%',
+              justifyContent: 'flex-start',
+              pl: 2.5,
+              py: 1
+            }}
+            startIcon={<NoteAddIcon />}
+          >
+            Add New Column
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </SortableContext>
   )
 }
 
