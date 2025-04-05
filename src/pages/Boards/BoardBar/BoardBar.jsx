@@ -6,6 +6,8 @@ import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatter'
+import avt1 from '~/assets/avt1.jpg'
+
 const MenuStyle = {
   color: 'white',
   bgcolor: 'transparent',
@@ -38,12 +40,14 @@ function BoardBar({ board }) {
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Chip
-          sx={MenuStyle}
-          icon={<DashboardIcon />}
-          label={board?.title}
-          clickable
-        />
+        <Tooltip title={board?.description}>
+          <Chip
+            sx={MenuStyle}
+            icon={<DashboardIcon />}
+            label={board?.title}
+            clickable
+          />
+        </Tooltip>
         <Chip
           sx={MenuStyle}
           icon={<VpnLockIcon />}
@@ -101,10 +105,7 @@ function BoardBar({ board }) {
               }
             }}
           >
-            <Avatar
-              alt='Hai Nguyen'
-              src='https://scontent.fhan5-2.fna.fbcdn.net/v/t39.30808-6/477943168_2406293513038133_8698001168044826872_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEIDfZJdb2Go2XlNNTc85ZmXPHllKimxsZc8eWUqKbGxns_QCX-sB8MmAESR_FvjWkN8cJXAcVGa_Pm1ERzPdNE&_nc_ohc=rJ0siRgTtKYQ7kNvgE2T5YI&_nc_oc=Adg8BbUOrIql7XpYVcDHgUJjhIm3A0xs5t-6k-mMqDJdC_UWk67YixJBMdDAkWItOTE&_nc_zt=23&_nc_ht=scontent.fhan5-2.fna&_nc_gid=w2ljyqWwr-nR45M2SSufBA&oh=00_AYE7gADjLgXw_h3uqQOdTWEc_0agUWEk7sAeLEPAyCx5xg&oe=67DB9B3A'
-            />
+            <Avatar alt='Hai Nguyen' src={avt1} />
           </AvatarGroup>
         </Tooltip>
       </Box>

@@ -6,8 +6,6 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  MouseSensor,
-  TouchSensor,
   DragOverlay,
   defaultDropAnimationSideEffects,
   closestCorners,
@@ -20,6 +18,7 @@ import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep, isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '../../../utils/formatter'
+import { MouseSensor, TouchSensor } from '../../../customLibs/dndKitSensor'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
