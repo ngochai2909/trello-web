@@ -7,6 +7,7 @@ import {
   horizontalListSortingStrategy
 } from '@dnd-kit/sortable'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 function ListColumn({ columns }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
@@ -17,6 +18,7 @@ function ListColumn({ columns }) {
 
   const addNewColumn = () => {
     if (!newColumnTitle) {
+      toast.error('Please enter a column name')
       return
     }
     toggleNewColumn()

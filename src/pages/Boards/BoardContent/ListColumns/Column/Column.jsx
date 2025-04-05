@@ -17,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { toast } from 'react-toastify'
 
 function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -38,6 +39,9 @@ function Column({ column }) {
 
   const addNewCard = () => {
     if (!newCardTitle) {
+      toast.error('Please enter a card name', {
+        position: 'bottom-right'
+      })
       return
     }
     toggleNewCard()
