@@ -18,18 +18,21 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
+import { set } from 'lodash'
+import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column }) {
+function Column({ column, createdNewCard, handleDeleteColumn }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column.cards
 
   const [openNewCard, setOpenNewCard] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -37,13 +40,21 @@ function Column({ column }) {
     setOpenNewCard(!openNewCard)
   }
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter a card name', {
         position: 'bottom-right'
       })
       return
     }
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    await createdNewCard(newCardData)
+
     toggleNewCard()
     setNewCardTitle('')
   }
@@ -64,6 +75,25 @@ function Column({ column }) {
     height: '100%',
     opacity: isDragging ? 0.5 : undefined
   }
+
+  const confirm = useConfirm()
+
+  const handleDelete = () => {
+    confirm({
+      title: 'Delete Column',
+      description: 'Are you sure you want to delete this column?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel',
+      buttonOrder: ['confirm', 'cancel']
+    })
+      .then(() => {
+        handleDeleteColumn(column._id)
+      })
+      .catch(() => {
+        console.log('cancelled')
+      })
+  }
+
   return (
     <div ref={setNodeRef} style={dndKitColumnStyle} {...attributes}>
       <Box
@@ -120,44 +150,101 @@ function Column({ column }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-column-dropdown'
               }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={toggleNewCard}
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <AddCardIcon fontSize='small' />
+                  <AddCardIcon fontSize='small' className='add-card-icon' />
                 </ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .cut-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <ContentCut fontSize='small' />
+                  <ContentCut fontSize='small' className='cut-icon' />
                 </ListItemIcon>
                 <ListItemText>Cut</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .copy-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <ContentCopy fontSize='small' />
+                  <ContentCopy fontSize='small' className='copy-icon' />
                 </ListItemIcon>
                 <ListItemText>Copy</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .paste-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <ContentPaste fontSize='small' />
+                  <ContentPaste fontSize='small' className='paste-icon' />
                 </ListItemIcon>
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'red',
+                    '& .delete-icon': {
+                      color: 'red'
+                    }
+                  }
+                }}
+                onClick={handleDelete}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize='small' />
+                  <DeleteIcon fontSize='small' className='delete-icon' />
                 </ListItemIcon>
                 <ListItemText>Remove this column</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .archive-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+              >
                 <ListItemIcon>
-                  <Cloud fontSize='small' />
+                  <Cloud fontSize='small' className='archive-icon' />
                 </ListItemIcon>
                 <ListItemText>Archive this column</ListItemText>
               </MenuItem>

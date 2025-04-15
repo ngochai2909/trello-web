@@ -25,7 +25,15 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({
+  board,
+  createdNewColumn,
+  createdNewCard,
+  moveColumn,
+  moveCardInColumn,
+  moveCardToOtherColumn,
+  handleDeleteColumn
+}) {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 10
@@ -51,11 +59,7 @@ function BoardContent({ board }) {
   const lastOverId = useRef(null)
 
   useEffect(() => {
-    const orderedColumns = mapOrder(
-      board?.columns,
-      board?.columnOrderIds,
-      '_id'
-    )
+    const orderedColumns = board.columns
     setOrderedColumns(orderedColumns)
   }, [board])
 
@@ -72,7 +76,8 @@ function BoardContent({ board }) {
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerCard
   ) => {
     setOrderedColumns((prevColumn) => {
       const overCardIndex = overColumn?.cards?.findIndex(
@@ -116,6 +121,7 @@ function BoardContent({ board }) {
         nextActiveColumn.cards = nextActiveColumn.cards.filter(
           (card) => card._id !== activeDraggingCardId
         )
+
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(
           newCardIndex,
           0,
@@ -127,6 +133,14 @@ function BoardContent({ board }) {
 
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
           (card) => card._id
+        )
+      }
+      if (triggerCard === 'handleDragEnd') {
+        moveCardToOtherColumn(
+          activeDraggingCardId,
+          oldColumnData._id,
+          nextOverColumn._id,
+          nextColumn
         )
       }
 
@@ -175,7 +189,8 @@ function BoardContent({ board }) {
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -203,7 +218,8 @@ function BoardContent({ board }) {
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
         const oldCardIndex = oldColumnData?.cards.findIndex(
@@ -218,13 +234,20 @@ function BoardContent({ board }) {
           newCardIndex
         )
 
+        const dndOrderedColumnIds = dndOrderedColumns.map((c) => c._id)
+
         setOrderedColumns((prevColumn) => {
           const nextColumn = cloneDeep(prevColumn)
           const targetColumn = nextColumn.find((c) => c._id === overColumn._id)
           targetColumn.cards = dndOrderedColumns
-          targetColumn.cardOrderIds = dndOrderedColumns.map((c) => c._id)
+          targetColumn.cardOrderIds = dndOrderedColumnIds
           return nextColumn
         })
+        moveCardInColumn(
+          dndOrderedColumns,
+          dndOrderedColumnIds,
+          oldColumnData._id
+        )
       }
     }
 
@@ -241,7 +264,9 @@ function BoardContent({ board }) {
           oldColumnIndex,
           newColumnIndex
         )
+
         setOrderedColumns(dndOrderedColumns)
+        moveColumn(dndOrderedColumns)
       }
     }
 
@@ -318,7 +343,12 @@ function BoardContent({ board }) {
           p: '5px 0'
         }}
       >
-        <ListColumn columns={orderedColumns} />
+        <ListColumn
+          columns={orderedColumns}
+          createdNewColumn={createdNewColumn}
+          createdNewCard={createdNewCard}
+          handleDeleteColumn={handleDeleteColumn}
+        />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (
