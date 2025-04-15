@@ -9,18 +9,30 @@ import {
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function ListColumn({ columns }) {
+function ListColumn({
+  columns,
+  createdNewColumn,
+  createdNewCard,
+  handleDeleteColumn
+}) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState('')
   const toggleNewColumn = () => {
     setOpenNewColumn(!openNewColumn)
   }
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter a column name')
       return
     }
+
+    const newColumnData = {
+      title: newColumnTitle
+    }
+
+    await createdNewColumn(newColumnData)
+
     toggleNewColumn()
     setNewColumnTitle('')
   }
@@ -44,7 +56,12 @@ function ListColumn({ columns }) {
         }}
       >
         {columns?.map((column) => (
-          <Column key={column._id} column={column} />
+          <Column
+            key={column._id}
+            column={column}
+            createdNewCard={createdNewCard}
+            handleDeleteColumn={handleDeleteColumn}
+          />
         ))}
         {!openNewColumn ? (
           <Box
