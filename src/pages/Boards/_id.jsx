@@ -24,16 +24,6 @@ function Board() {
 
   useEffect(() => {
     fetchBoardDetailApi(boardId).then((board) => {
-      board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
-
-      board.columns.forEach((column) => {
-        if (isEmpty(column.cards)) {
-          column.cards = [generatePlaceholderCard(column)]
-          column.cardOrderIds = [generatePlaceholderCard(column)._id]
-        } else {
-          column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
-        }
-      })
       setBoard(board)
     })
   }, [])
