@@ -1,9 +1,7 @@
 import { Box } from '@mui/material'
 import ListColumn from './ListColumns/ListColumn'
-import { mapOrder } from '~/utils/sort'
 import {
   DndContext,
-  PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
@@ -27,18 +25,15 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 
 function BoardContent({
   board,
-  createdNewColumn,
-  createdNewCard,
   moveColumn,
   moveCardInColumn,
-  moveCardToOtherColumn,
-  handleDeleteColumn
+  moveCardToOtherColumn
 }) {
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 10
-    }
-  })
+  // const pointerSensor = useSensor(PointerSensor, {
+  //   activationConstraint: {
+  //     distance: 10
+  //   }
+  // })
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10
@@ -322,6 +317,7 @@ function BoardContent({
       }
       return lastOverId.current ? [{ id: lastOverId.current }] : []
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeDragItemType]
   )
 
@@ -343,12 +339,7 @@ function BoardContent({
           p: '5px 0'
         }}
       >
-        <ListColumn
-          columns={orderedColumns}
-          createdNewColumn={createdNewColumn}
-          createdNewCard={createdNewCard}
-          handleDeleteColumn={handleDeleteColumn}
-        />
+        <ListColumn columns={orderedColumns} />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

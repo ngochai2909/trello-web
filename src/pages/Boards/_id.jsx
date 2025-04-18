@@ -3,72 +3,32 @@ import { Box, CircularProgress, Container } from '@mui/material'
 import AppBar from '../../components/AppBar/AppBar'
 import BoardContent from './BoardContent/BoardContent'
 import BoardBar from './BoardBar/BoardBar'
-import { useEffect, useState } from 'react'
-import { mapOrder } from '../../utils/sort'
+import { useEffect } from 'react'
 import {
   createNewCardApi,
-  createNewColumnApi,
   deleteColumnApi,
-  fetchBoardDetailApi,
   moveCardToOtherColumnApi,
   updateBoardDetailApi,
   updateColumnDetailApi
 } from '../../apis'
-import { generatePlaceholderCard } from '../../utils/formatter'
-import { isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { toast } from 'react-toastify'
+import {
+  fetchBoardDetailApi,
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '../../redux/activeBoard/activeBoardSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 function Board() {
-  const [board, setBoard] = useState(null)
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   const boardId = '67eeca3e644244f0269745f1'
 
   useEffect(() => {
-    fetchBoardDetailApi(boardId).then((board) => {
-      setBoard(board)
-    })
-  }, [])
-
-  const createNewColumn = async (newColumnData) => {
-    const createdColumn = await createNewColumnApi({
-      ...newColumnData,
-      boardId: board._id
-    })
-
-    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
-    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
-
-    const newBoard = {
-      ...board
-    }
-    newBoard.columns.push(createdColumn)
-    newBoard.columnOrderIds.push(createdColumn._id)
-    setBoard(newBoard)
-  }
-
-  const createNewCard = async (newCardData) => {
-    const createdCard = await createNewCardApi({
-      ...newCardData,
-      boardId: board._id
-    })
-
-    const newBoard = {
-      ...board
-    }
-    const columnToUpdate = newBoard.columns.find(
-      (column) => column._id === createdCard.columnId
-    )
-
-    if (columnToUpdate) {
-      if (columnToUpdate.cards.some((card) => card.FE_placeholderCard)) {
-        columnToUpdate.cards = [createdCard]
-        columnToUpdate.cardOrderIds = [createdCard._id]
-      } else {
-        columnToUpdate.cards.push(createdCard)
-        columnToUpdate.cardOrderIds.push(createdCard._id)
-      }
-    }
-    setBoard(newBoard)
-  }
+    dispatch(fetchBoardDetailApi(boardId))
+  }, [dispatch])
 
   const moveColumn = (dndOrderedColumns) => {
     const dndOrderedColumnIds = dndOrderedColumns.map((column) => column._id)
@@ -78,7 +38,7 @@ function Board() {
 
     newBoard.columnOrderIds = dndOrderedColumnIds
     newBoard.columns = dndOrderedColumns
-    setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     updateBoardDetailApi(newBoard._id, {
       columnOrderIds: dndOrderedColumnIds
@@ -86,9 +46,8 @@ function Board() {
   }
 
   const moveCardInColumn = (dndOrderCards, dndOrderCardIds, columnId) => {
-    const newBoard = {
-      ...board
-    }
+    const newBoard = cloneDeep(board)
+
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === columnId
     )
@@ -115,7 +74,7 @@ function Board() {
 
     newBoard.columnOrderIds = dndOrderedColumnIds
     newBoard.columns = dndOrderedColumns
-    setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     let prevCardOrderIds = newBoard.columns.find(
       (column) => column._id === prevColumnId
@@ -134,28 +93,6 @@ function Board() {
         (column) => column._id === nextColumnId
       )?.cardOrderIds
     })
-  }
-
-  const handleDeleteColumn = (columnId) => {
-    const newBoard = {
-      ...board
-    }
-
-    newBoard.columns = newBoard.columns.filter(
-      (column) => column._id !== columnId
-    )
-    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
-      (id) => id !== columnId
-    )
-    setBoard(newBoard)
-
-    deleteColumnApi(columnId)
-      .then((res) => {
-        toast.success(res?.message)
-      })
-      .catch(() => {
-        toast.error('Failed to delete column')
-      })
   }
 
   if (!board) {
@@ -182,12 +119,9 @@ function Board() {
       <BoardBar board={board} />
       <BoardContent
         board={board}
-        createdNewColumn={createNewColumn}
-        createdNewCard={createNewCard}
         moveColumn={moveColumn}
         moveCardInColumn={moveCardInColumn}
         moveCardToOtherColumn={moveCardToOtherColumn}
-        handleDeleteColumn={handleDeleteColumn}
       />
     </Container>
   )
