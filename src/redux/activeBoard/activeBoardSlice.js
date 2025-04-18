@@ -9,7 +9,7 @@ const initialState = {
   currentActiveBoard: null
 }
 
-export const fetchActiveBoard = createAsyncThunk(
+export const fetchBoardDetailApi = createAsyncThunk(
   'activeBoard/fetchBoardDetailApi',
   async (boardId) => {
     const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
@@ -31,7 +31,7 @@ export const activeBoardSlice = createSlice({
   extraReducers: (builder) => {
     //dùng fullfilled để lấy dữ liệu từ api và lưu vào state, chỉ dùng fullfiled vì data luôn dc trả về, nếu lỗi thì
     // sẽ bị reject và hiển thị lỗi tại axios interceptor
-    builder.addCase(fetchActiveBoard.fulfilled, (state, action) => {
+    builder.addCase(fetchBoardDetailApi.fulfilled, (state, action) => {
       let board = action.payload
 
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')

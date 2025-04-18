@@ -8,15 +8,20 @@ import {
 } from '@dnd-kit/sortable'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { generatePlaceholderCard } from '~/utils/formatter'
+import { cloneDeep } from 'lodash'
+import { updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { createNewColumnApi } from '~/apis'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 
-function ListColumn({
-  columns,
-  createdNewColumn,
-  createdNewCard,
-  handleDeleteColumn
-}) {
+function ListColumn({ columns }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState('')
+
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   const toggleNewColumn = () => {
     setOpenNewColumn(!openNewColumn)
   }
@@ -31,7 +36,19 @@ function ListColumn({
       title: newColumnTitle
     }
 
-    await createdNewColumn(newColumnData)
+    const createdColumn = await createNewColumnApi({
+      ...newColumnData,
+      boardId: board._id
+    })
+
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+
+    const newBoard = cloneDeep(board)
+
+    newBoard.columns.push(createdColumn)
+    newBoard.columnOrderIds.push(createdColumn._id)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     toggleNewColumn()
     setNewColumnTitle('')
@@ -56,12 +73,7 @@ function ListColumn({
         }}
       >
         {columns?.map((column) => (
-          <Column
-            key={column._id}
-            column={column}
-            createdNewCard={createdNewCard}
-            handleDeleteColumn={handleDeleteColumn}
-          />
+          <Column key={column._id} column={column} />
         ))}
         {!openNewColumn ? (
           <Box

@@ -8,20 +8,28 @@ import ContentCut from '@mui/icons-material/ContentCut'
 import Cloud from '@mui/icons-material/Cloud'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { ContentCopy, ContentPaste, Opacity } from '@mui/icons-material'
+import { ContentCopy, ContentPaste } from '@mui/icons-material'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCard from './ListCards/ListCard'
-import { mapOrder } from '~/utils/sort'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
-import { set } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { useConfirm } from 'material-ui-confirm'
+import { createNewCardApi, deleteColumnApi } from '~/apis'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
 
-function Column({ column, createdNewCard, handleDeleteColumn }) {
+function Column({ column }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -53,7 +61,27 @@ function Column({ column, createdNewCard, handleDeleteColumn }) {
       columnId: column._id
     }
 
-    await createdNewCard(newCardData)
+    const createdCard = await createNewCardApi({
+      ...newCardData,
+      boardId: board._id
+    })
+
+    const newBoard = cloneDeep(board)
+
+    const columnToUpdate = newBoard.columns.find(
+      (column) => column._id === createdCard.columnId
+    )
+
+    if (columnToUpdate) {
+      if (columnToUpdate.cards.some((card) => card.FE_placeholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     toggleNewCard()
     setNewCardTitle('')
@@ -87,7 +115,25 @@ function Column({ column, createdNewCard, handleDeleteColumn }) {
       buttonOrder: ['confirm', 'cancel']
     })
       .then(() => {
-        handleDeleteColumn(column._id)
+        const newBoard = {
+          ...board
+        }
+
+        newBoard.columns = newBoard.columns.filter(
+          (col) => col._id !== column._id
+        )
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+          (id) => id !== column._id
+        )
+        dispatch(updateCurrentActiveBoard(newBoard))
+
+        deleteColumnApi(column._id)
+          .then((res) => {
+            toast.success(res?.message)
+          })
+          .catch(() => {
+            toast.error('Failed to delete column')
+          })
       })
       .catch(() => {
         console.log('cancelled')
