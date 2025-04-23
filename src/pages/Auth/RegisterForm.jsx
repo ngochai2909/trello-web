@@ -1,124 +1,146 @@
-import { Box, TextField, Button, Typography, Link } from '@mui/material'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined'
-
+// TrungQuanDev: https://youtube.com/@trungquandev
+import { Link } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
+import LockIcon from '@mui/icons-material/Lock'
+import Typography from '@mui/material/Typography'
+import { Card as MuiCard } from '@mui/material'
+import { ReactComponent as TrelloIcon } from '~/assets/Trello.svg'
+import CardActions from '@mui/material/CardActions'
+import TextField from '@mui/material/TextField'
+import Zoom from '@mui/material/Zoom'
+import { useForm } from 'react-hook-form'
+import {
+  EMAIL_RULE,
+  EMAIL_RULE_MESSAGE,
+  FIELD_REQUIRED_MESSAGE,
+  PASSWORD_RULE,
+  PASSWORD_RULE_MESSAGE
+} from '~/utils/validators'
+import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 function RegisterForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm()
+
+  const submitRegister = (data) => {
+    console.log(data)
+  }
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        padding: '2rem',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px',
-        mt: 8
-      }}
-    >
-      <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-        <LockOutlinedIcon
-          sx={{
-            backgroundColor: '#0055ff',
-            color: 'white',
-            p: 1,
-            borderRadius: '50%'
-          }}
-        />
-        <MenuBookOutlinedIcon
-          sx={{
-            backgroundColor: '#0055ff',
-            color: 'white',
-            p: 1,
-            borderRadius: '50%'
-          }}
-        />
-      </Box>
-
-      <Typography
-        component='h1'
-        variant='h6'
-        sx={{
-          mb: 3,
-          color: '#666',
-          fontWeight: 400
-        }}
-      >
-        Author: TrungQuanDev
-      </Typography>
-
-      <TextField
-        margin='normal'
-        required
-        fullWidth
-        id='email'
-        label='Enter Email...'
-        name='email'
-        autoComplete='email'
-        autoFocus
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        margin='normal'
-        required
-        fullWidth
-        name='password'
-        label='Enter Password...'
-        type='password'
-        id='password'
-        autoComplete='new-password'
-        sx={{ mb: 2 }}
-      />
-
-      <TextField
-        margin='normal'
-        required
-        fullWidth
-        name='confirmPassword'
-        label='Enter Password Confirmation...'
-        type='password'
-        id='confirmPassword'
-        autoComplete='new-password'
-        sx={{ mb: 3 }}
-      />
-
-      <Button
-        type='submit'
-        fullWidth
-        variant='contained'
-        sx={{
-          mb: 2,
-          py: 1.5,
-          fontSize: '1rem',
-          textTransform: 'none',
-          backgroundColor: '#0055ff',
-          '&:hover': {
-            backgroundColor: '#0044cc'
-          }
-        }}
-      >
-        Register
-      </Button>
-
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Typography color='text.secondary'>Already have an account?</Typography>
-        <Link
-          href='/login'
-          sx={{
-            textDecoration: 'none',
-            color: '#0055ff',
-            '&:hover': {
-              textDecoration: 'underline'
-            }
-          }}
-        >
-          Log in!
-        </Link>
-      </Box>
-    </Box>
+    <form onSubmit={handleSubmit(submitRegister)}>
+      <Zoom in={true} style={{ transitionDelay: '200ms' }}>
+        <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
+          <Box
+            sx={{
+              margin: '1em',
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 1
+            }}
+          >
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <LockIcon />
+            </Avatar>
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <TrelloIcon />
+            </Avatar>
+          </Box>
+          <Box
+            sx={{
+              marginTop: '1em',
+              display: 'flex',
+              justifyContent: 'center',
+              color: (theme) => theme.palette.grey[500]
+            }}
+          >
+            Author: Hai Nguyen
+          </Box>
+          <Box sx={{ padding: '0 1em 1em 1em' }}>
+            <Box sx={{ marginTop: '1em' }}>
+              <TextField
+                {...register('email', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: {
+                    value: EMAIL_RULE,
+                    message: EMAIL_RULE_MESSAGE
+                  }
+                })}
+                autoFocus
+                fullWidth
+                label='Enter Email...'
+                type='text'
+                variant='outlined'
+                error={!!errors.email}
+              />
+              <FieldErrorAlert errors={errors} fieldName='email' />
+            </Box>
+            <Box sx={{ marginTop: '1em' }}>
+              <TextField
+                {...register('password', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: {
+                    value: PASSWORD_RULE,
+                    message: PASSWORD_RULE_MESSAGE
+                  }
+                })}
+                fullWidth
+                label='Enter Password...'
+                type='password'
+                variant='outlined'
+                error={!!errors.password}
+              />
+              <FieldErrorAlert errors={errors} fieldName='password' />
+            </Box>
+            <Box sx={{ marginTop: '1em' }}>
+              <TextField
+                fullWidth
+                label='Enter Password Confirmation...'
+                type='password'
+                variant='outlined'
+                {...register('password_confirmation', {
+                  validate: (value) => {
+                    if (value !== watch('password')) {
+                      return 'Passwords do not match'
+                    }
+                    return true
+                  }
+                })}
+                error={!!errors.passwordConfirmation}
+              />
+              <FieldErrorAlert
+                errors={errors}
+                fieldName='password_confirmation'
+              />
+            </Box>
+          </Box>
+          <CardActions sx={{ padding: '0 1em 1em 1em' }}>
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              size='large'
+              fullWidth
+            >
+              Register
+            </Button>
+          </CardActions>
+          <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
+            <Typography>Already have an account?</Typography>
+            <Link to='/login' style={{ textDecoration: 'none' }}>
+              <Typography
+                sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}
+              >
+                Log in!
+              </Typography>
+            </Link>
+          </Box>
+        </MuiCard>
+      </Zoom>
+    </form>
   )
 }
 

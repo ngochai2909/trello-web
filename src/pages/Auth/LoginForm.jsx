@@ -1,14 +1,24 @@
-import { Box, TextField, Button, Typography, Link } from '@mui/material'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined'
+import { Link } from 'react-router-dom'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
+import LockIcon from '@mui/icons-material/Lock'
+import Typography from '@mui/material/Typography'
+import { Card as MuiCard } from '@mui/material'
+import { ReactComponent as TrelloIcon } from '~/assets/Trello.svg'
+import CardActions from '@mui/material/CardActions'
+import TextField from '@mui/material/TextField'
+import Zoom from '@mui/material/Zoom'
+import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
+import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
-  FIELD_REQUIRED_MESSAGE
+  FIELD_REQUIRED_MESSAGE,
+  PASSWORD_RULE,
+  PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
-import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
-
 function LoginForm() {
   const {
     register,
@@ -16,124 +26,138 @@ function LoginForm() {
     formState: { errors }
   } = useForm()
 
-  const onSubmit = (data) => {
+  const submitLogIn = (data) => {
     console.log(data)
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          backgroundColor: 'white',
-          padding: '2rem',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          width: '100%',
-          maxWidth: '700px',
-          mt: 8
-        }}
-      >
-        <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-          <LockOutlinedIcon
+    <form onSubmit={handleSubmit(submitLogIn)}>
+      <Zoom in={true} style={{ transitionDelay: '200ms' }}>
+        <MuiCard sx={{ minWidth: 380, maxWidth: 380, marginTop: '6em' }}>
+          <Box
             sx={{
-              backgroundColor: '#0055ff',
-              color: 'white',
-              p: 1,
-              borderRadius: '50%'
-            }}
-          />
-          <MenuBookOutlinedIcon
-            sx={{
-              backgroundColor: '#0055ff',
-              color: 'white',
-              p: 1,
-              borderRadius: '50%'
-            }}
-          />
-        </Box>
-
-        <Typography
-          component='h1'
-          variant='h6'
-          sx={{
-            mb: 3,
-            color: '#666',
-            fontWeight: 400
-          }}
-        >
-          Author: Hải Nguyễn
-        </Typography>
-
-        <Box>
-          <TextField
-            margin='normal'
-            fullWidth
-            id='email'
-            label='Enter Email...'
-            autoComplete='email'
-            autoFocus
-            sx={{ mb: 2 }}
-            {...register('email', {
-              required: FIELD_REQUIRED_MESSAGE,
-              pattern: {
-                value: EMAIL_RULE,
-                message: EMAIL_RULE_MESSAGE
-              }
-            })}
-          />
-          <FieldErrorAlert errors={errors} fieldName='email' />
-        </Box>
-        <Box>
-          <TextField
-            margin='normal'
-            fullWidth
-            name='password'
-            label='Enter Password...'
-            type='password'
-            id='password'
-            autoComplete='current-password'
-            sx={{ mb: 3 }}
-          />
-        </Box>
-        <Button
-          type='submit'
-          fullWidth
-          variant='contained'
-          sx={{
-            mb: 2,
-            py: 1.5,
-            fontSize: '1rem',
-            textTransform: 'none',
-            backgroundColor: '#0055ff',
-            '&:hover': {
-              backgroundColor: '#0044cc'
-            }
-          }}
-        >
-          Login
-        </Button>
-
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Typography color='text.secondary'>
-            Don&apos;t have an account?
-          </Typography>
-          <Link
-            href='/register'
-            sx={{
-              textDecoration: 'none',
-              color: '#0055ff',
-              '&:hover': {
-                textDecoration: 'underline'
-              }
+              margin: '1em',
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 1
             }}
           >
-            Register now!
-          </Link>
-        </Box>
-      </Box>
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <LockIcon />
+            </Avatar>
+            <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <TrelloIcon />
+            </Avatar>
+          </Box>
+          <Box
+            sx={{
+              marginTop: '1em',
+              display: 'flex',
+              justifyContent: 'center',
+              color: (theme) => theme.palette.grey[500]
+            }}
+          >
+            Author: Hai Nguyen
+          </Box>
+          <Box
+            sx={{
+              marginTop: '1em',
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              padding: '0 1em'
+            }}
+          >
+            <Alert
+              severity='success'
+              sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}
+            >
+              Your email&nbsp;
+              <Typography
+                variant='span'
+                sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}
+              >
+                trungquandev@gmail.com
+              </Typography>
+              &nbsp;has been verified.
+              <br />
+              Now you can login to enjoy our services! Have a good day!
+            </Alert>
+            <Alert
+              severity='info'
+              sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}
+            >
+              An email has been sent to&nbsp;
+              <Typography
+                variant='span'
+                sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}
+              >
+                trungquandev@gmail.com
+              </Typography>
+              <br />
+              Please check and verify your account before logging in!
+            </Alert>
+          </Box>
+          <Box sx={{ padding: '0 1em 1em 1em' }}>
+            <Box sx={{ marginTop: '1em' }}>
+              <TextField
+                {...register('email', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: {
+                    value: EMAIL_RULE,
+                    message: EMAIL_RULE_MESSAGE
+                  }
+                })}
+                // autoComplete="nope"
+                error={!!errors.email}
+                autoFocus
+                fullWidth
+                label='Enter Email...'
+                type='text'
+                variant='outlined'
+              />
+              <FieldErrorAlert errors={errors} fieldName='email' />
+            </Box>
+            <Box sx={{ marginTop: '1em' }}>
+              <TextField
+                {...register('password', {
+                  required: FIELD_REQUIRED_MESSAGE,
+                  pattern: {
+                    value: PASSWORD_RULE,
+                    message: PASSWORD_RULE_MESSAGE
+                  }
+                })}
+                fullWidth
+                label='Enter Password...'
+                type='password'
+                variant='outlined'
+              />
+              <FieldErrorAlert errors={errors} fieldName='password' />
+            </Box>
+          </Box>
+          <CardActions sx={{ padding: '0 1em 1em 1em' }}>
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              size='large'
+              fullWidth
+            >
+              Login
+            </Button>
+          </CardActions>
+          <Box sx={{ padding: '0 1em 1em 1em', textAlign: 'center' }}>
+            <Typography>New to Trello MERN Stack Advanced?</Typography>
+            <Link to='/register' style={{ textDecoration: 'none' }}>
+              <Typography
+                sx={{ color: 'primary.main', '&:hover': { color: '#ffbb39' } }}
+              >
+                Create account!
+              </Typography>
+            </Link>
+          </Box>
+        </MuiCard>
+      </Zoom>
     </form>
   )
 }
