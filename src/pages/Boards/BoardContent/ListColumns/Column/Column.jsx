@@ -369,6 +369,7 @@ function Column({ column }) {
               />
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <Button
+                  className='interceptor-loading'
                   variant='contained'
                   data-no-dnd='true'
                   color='success'
