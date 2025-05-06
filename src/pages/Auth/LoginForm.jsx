@@ -20,7 +20,6 @@ import {
   PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
 import { useDispatch } from 'react-redux'
-import { registerUserAPI } from '~/apis'
 import { toast } from 'react-toastify'
 import { loginUserApi } from '~/redux/user/userSlice'
 function LoginForm() {
@@ -37,6 +36,8 @@ function LoginForm() {
 
   const registeredEmail = searchParams.get('registeredEmail')
   const verifiedEmail = searchParams.get('verifiedEmail')
+
+  console.log(registeredEmail, verifiedEmail)
 
   const submitLogIn = (data) => {
     const { email, password } = data
