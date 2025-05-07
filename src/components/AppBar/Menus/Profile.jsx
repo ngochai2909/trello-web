@@ -9,6 +9,7 @@ import { Logout, PersonAdd, Settings } from '@mui/icons-material'
 import { useDispatch, useSelector } from 'react-redux'
 import { useConfirm } from 'material-ui-confirm'
 import { logoutUserApi, selectCurrentUser } from '~/redux/user/userSlice'
+import { Link } from 'react-router-dom'
 
 function Profile() {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -64,13 +65,15 @@ function Profile() {
           'aria-labelledby': 'basic-button-profile'
         }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar
-            src={currentUser?.avatar || avt1}
-            sx={{ width: 28, height: 28, mr: 2 }}
-          />{' '}
-          Profile
-        </MenuItem>
+        <Link to={'/settings/account'}>
+          <MenuItem onClick={handleClose}>
+            <Avatar
+              src={currentUser?.avatar || avt1}
+              sx={{ width: 28, height: 28, mr: 2 }}
+            />{' '}
+            Profile
+          </MenuItem>
+        </Link>
         <MenuItem onClick={handleClose}>
           <Avatar
             src={currentUser?.avatar || avt1}
