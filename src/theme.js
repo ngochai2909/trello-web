@@ -36,6 +36,26 @@ const theme = extendTheme({
             backgroundColor: 'white',
 
             borderRadius: '8px'
+          },
+          a: {
+            textDecoration: 'none',
+            color: '#000000'
+          },
+          '.MuiLink-root': {
+            textDecoration: 'none',
+            color: '#000000'
+          }
+        }
+      }
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          textDecoration: 'none',
+          color: '#000000',
+          '&:hover': {
+            textDecoration: 'none',
+            color: '#000000'
           }
         }
       }
