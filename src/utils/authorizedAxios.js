@@ -1,6 +1,15 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { interceptorLoadingElements } from './formatter'
+import { refreshTokenApi } from '~/apis'
+import { logoutUserApi } from '~/redux/user/userSlice'
+
+let axiosReduxStore
+
+export const injectStore = (mainStore) => {
+  axiosReduxStore = mainStore
+}
+
 let authorizedAxiosInstance = axios.create()
 
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10
@@ -22,6 +31,8 @@ authorizedAxiosInstance.interceptors.request.use(
   }
 )
 
+let refreshTokenPromise = null
+
 // Add a response interceptor
 authorizedAxiosInstance.interceptors.response.use(
   (response) => {
@@ -33,6 +44,33 @@ authorizedAxiosInstance.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     interceptorLoadingElements(false)
+
+    if (error.response?.status === 401) {
+      axiosReduxStore.dispatch(logoutUserApi())
+    }
+
+    const originalRequest = error.config
+    if (error.response?.status === 410 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = refreshTokenApi()
+          .then((data) => {
+            return data?.accessToken
+          })
+          .catch(() => {
+            axiosReduxStore.dispatch(logoutUserApi(false))
+          })
+          .finally(() => {
+            refreshTokenPromise = null
+          })
+      }
+
+      // eslint-disable-next-line no-unused-vars
+      return refreshTokenPromise.then((accessToken) => {
+        return authorizedAxiosInstance(originalRequest)
+      })
+    }
 
     let errorMessage = error?.message
 
