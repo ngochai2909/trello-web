@@ -5,6 +5,15 @@ import * as path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: [
+      '@mui/material/Unstable_Grid2',
+      '@emotion/react',
+      '@emotion/styled',
+      '@mui/material/Tooltip'
+    ]
+  },
+
   define: {
     'process.env': process.env
   },
