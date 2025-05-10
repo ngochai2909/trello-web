@@ -86,6 +86,13 @@ function Boards() {
     return <PageLoadingSpinner caption='Loading Boards...' />
   }
 
+  const afterCreateBoard = () => {
+    fetchBoardsApi(location.search).then((response) => {
+      setBoards(response.boards)
+      setTotalBoards(response.totalBoards)
+    })
+  }
+
   return (
     <Container disableGutters maxWidth={false}>
       <AppBar />
@@ -108,7 +115,7 @@ function Boards() {
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction='column' spacing={1}>
-              <SidebarCreateBoardModal />
+              <SidebarCreateBoardModal afterCreateBoard={afterCreateBoard} />
             </Stack>
           </Grid>
 
