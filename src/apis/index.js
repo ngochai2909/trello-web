@@ -90,3 +90,10 @@ export const refreshTokenApi = async () => {
   )
   return response.data
 }
+
+export const fetchBoardsApi = async (searchParams) => {
+  const response = await authorizedAxiosInstance.get(
+    `${API_ROOT}/v1/boards${searchParams}`
+  )
+  return response.data
+}
