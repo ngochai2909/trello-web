@@ -7,6 +7,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatter'
 import avt1 from '~/assets/avt1.jpg'
+import BoardUserGroup from './BoardUserGroup'
 
 const MenuStyle = {
   color: 'white',
@@ -87,7 +88,7 @@ function BoardBar({ board }) {
         >
           Invite
         </Button>
-        <Tooltip title='avatar' arrow>
+        {/* <Tooltip title='avatar' arrow>
           <AvatarGroup
             max={7}
             sx={{
@@ -107,7 +108,8 @@ function BoardBar({ board }) {
           >
             <Avatar alt='Hai Nguyen' src={avt1} />
           </AvatarGroup>
-        </Tooltip>
+        </Tooltip> */}
+        <BoardUserGroup />
       </Box>
     </Box>
   )

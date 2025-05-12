@@ -11,8 +11,12 @@ import {
 } from '@mui/material'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { updateCurrentCard } from '~/redux/activeCard/activeCardSlice'
+import { useDispatch } from 'react-redux'
 
 function Card({ card }) {
+  const dispatch = useDispatch()
+
   const {
     attributes,
     listeners,
@@ -38,8 +42,13 @@ function Card({ card }) {
     )
   }
 
+  const setActiveCard = () => {
+    dispatch(updateCurrentCard(card))
+  }
+
   return (
     <MuiCard
+      onClick={setActiveCard}
       ref={setNodeRef}
       style={dndKitCardStyle}
       {...attributes}

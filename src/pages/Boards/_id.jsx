@@ -18,9 +18,13 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
+import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
+import { selectActiveCard } from '~/redux/activeCard/activeCardSlice'
 function Board() {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
+
+  const activeCard = useSelector(selectActiveCard)
 
   const { boardId } = useParams()
 
@@ -102,6 +106,7 @@ function Board() {
       disableGutters
       sx={{ height: '100vh', backgroundColor: 'primary.main' }}
     >
+      {activeCard && <ActiveCard />}
       <AppBar />
       <BoardBar board={board} />
       <BoardContent
