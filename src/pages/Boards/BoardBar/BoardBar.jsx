@@ -109,7 +109,7 @@ function BoardBar({ board }) {
             <Avatar alt='Hai Nguyen' src={avt1} />
           </AvatarGroup>
         </Tooltip> */}
-        <BoardUserGroup />
+        <BoardUserGroup boardUsers={board?.FE_allUsers} />
       </Box>
     </Box>
   )
