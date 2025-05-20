@@ -28,6 +28,21 @@ export const activeBoardSlice = createSlice({
       let board = action.payload
 
       state.currentActiveBoard = board
+    },
+    updateCardInBoard: (state, action) => {
+      const inComingCard = action.payload
+      const board = state.currentActiveBoard
+      const column = board.columns.find(
+        (column) => column._id === inComingCard.columnId
+      )
+      if (column) {
+        const card = column.cards.find((card) => card._id === inComingCard._id)
+        if (card) {
+          Object.keys(inComingCard).forEach((key) => {
+            card[key] = inComingCard[key]
+          })
+        }
+      }
     }
   },
   extraReducers: (builder) => {
@@ -35,6 +50,8 @@ export const activeBoardSlice = createSlice({
     // sẽ bị reject và hiển thị lỗi tại axios interceptor
     builder.addCase(fetchBoardDetailApi.fulfilled, (state, action) => {
       let board = action.payload
+
+      board.FE_allUsers = board.owners.concat(board.members)
 
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
 
@@ -55,7 +72,8 @@ export const activeBoardSlice = createSlice({
 export const selectCurrentActiveBoard = (state) =>
   state.activeBoard.currentActiveBoard
 
-export const { updateCurrentActiveBoard } = activeBoardSlice.actions
+export const { updateCurrentActiveBoard, updateCardInBoard } =
+  activeBoardSlice.actions
 
 // export default activeBoardSlice.reducer
 
