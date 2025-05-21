@@ -113,6 +113,10 @@ function ActiveCard() {
     )
   }
 
+  const onAddCardComment = async (comment) => {
+    await callApiUpdateCard({ comment })
+  }
+
   return (
     <Modal
       disableScrollLock
@@ -229,7 +233,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-              <CardActivitySection />
+              <CardActivitySection
+                cardComments={activeCard?.comments}
+                onAddCardComment={onAddCardComment}
+              />
             </Box>
           </Grid>
 

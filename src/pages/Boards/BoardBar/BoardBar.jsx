@@ -1,4 +1,4 @@
-import { Avatar, AvatarGroup, Box, Button, Chip, Tooltip } from '@mui/material'
+import { Box, Button, Chip, Tooltip } from '@mui/material'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
@@ -6,8 +6,8 @@ import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { capitalizeFirstLetter } from '~/utils/formatter'
-import avt1 from '~/assets/avt1.jpg'
 import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 
 const MenuStyle = {
   color: 'white',
@@ -75,19 +75,7 @@ function BoardBar({ board }) {
         />
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button
-          sx={{
-            color: 'white',
-            borderColor: 'white',
-            '&:hover': {
-              borderColor: 'white'
-            }
-          }}
-          variant='outlined'
-          startIcon={<PersonAddIcon />}
-        >
-          Invite
-        </Button>
+        <InviteBoardUser boardId={board?._id} />
         {/* <Tooltip title='avatar' arrow>
           <AvatarGroup
             max={7}
